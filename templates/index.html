@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Pneumonia Detection AI</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f0f2f5;
+    text-align:center;
+    padding:40px;
+}
+
+.container{
+    background:white;
+    width:800px;
+    margin:auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    color:#2c3e50;
+}
+
+.images{
+    display:flex;
+    justify-content:space-around;
+    margin-top:30px;
+}
+
+img{
+    width:300px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+button{
+    padding:10px 25px;
+    font-size:16px;
+    background:#3498db;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2980b9;
+}
+
+.result{
+    margin-top:20px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.severity{
+    margin-top:10px;
+    font-size:18px;
+    color:#e74c3c;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Pneumonia Detection from Chest X-ray</h1>
+
+<p>Upload a chest X-ray image to detect Pneumonia using AI</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<input type="file" name="file" required>
+
+<br><br>
+
+<button type="submit">Predict</button>
+
+</form>
+
+{% if prediction %}
+
+<div class="result">
+Prediction: {{ prediction }}
+</div>
+
+<div class="severity">
+Severity Score: {{ severity }} %
+</div>
+
+{% endif %}
+
+{% if image_path or heatmap_path %}
+
+<div class="images">
+
+{% if image_path %}
+
+<div>
+<h3>Uploaded X-ray</h3>
+<img src="{{ url_for('static', filename=image_path) }}">
+</div>
+{% endif %}
+
+{% if heatmap_path %}
+
+<div>
+<h3>AI Heatmap</h3>
+<img src="{{ url_for('static', filename='heatmap.jpg') }}">
+</div>
+{% endif %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>

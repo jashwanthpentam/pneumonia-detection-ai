@@ -1,130 +1,67 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<title>Pneumonia Detection AI</title>
-
-<style>
-
-body{
-    font-family: Arial, sans-serif;
-    background:#f0f2f5;
-    text-align:center;
-    padding:40px;
-}
-
-.container{
-    background:white;
-    width:800px;
-    margin:auto;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
-
-h1{
-    color:#2c3e50;
-}
-
-.images{
-    display:flex;
-    justify-content:space-around;
-    margin-top:30px;
-}
-
-img{
-    width:300px;
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
-button{
-    padding:10px 25px;
-    font-size:16px;
-    background:#3498db;
-    color:white;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#2980b9;
-}
-
-.result{
-    margin-top:20px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.severity{
-    margin-top:10px;
-    font-size:18px;
-    color:#e74c3c;
-}
-
-</style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumonia Detection | Chest X-ray</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .page { max-width: 1000px; margin: 36px auto; padding: 0 18px; }
+    .panel { background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 8px 30px rgba(20,40,70,.08); }
+    .upload-form { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:22px; }
+    .upload-form input { max-width:100%; }
+    .notice { padding:14px 16px; border-radius:10px; margin:18px 0; text-align:left; }
+    .error { background:#fff1f0; color:#9f2424; }
+    .result { margin-top:24px; padding:18px; border-radius:12px; background:#f0f7ff; text-align:left; }
+    .images { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; margin-top:22px; }
+    .images figure { margin:0; }
+    .images img { width:100%; height:auto; display:block; border-radius:10px; }
+    .disclaimer { margin-top:22px; color:#5e6878; font-size:.92rem; line-height:1.55; text-align:left; }
+    .score { font-weight:700; }
+    @media (max-width:600px) { .page{margin:16px auto}.panel{padding:18px} }
+  </style>
 </head>
-
 <body>
+  <main class="page">
+    <section class="panel">
+      <h1>Pneumonia Detection from Chest X-rays</h1>
+      <p>Upload a chest X-ray image for an experimental DenseNet model prediction.</p>
+      <form class="upload-form" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg,.jpeg,.png,.bmp,.webp" required>
+        <button type="submit">Analyze X-ray</button>
+      </form>
 
-<div class="container">
+      {% if error %}
+        <div class="notice error" role="alert">{{ error }}</div>
+      {% endif %}
 
-<h1>Pneumonia Detection from Chest X-ray</h1>
+      {% if prediction %}
+        <section class="result" aria-live="polite">
+          <h2>Model result: {{ prediction }}</h2>
+          <p class="score">Raw model score: {{ model_score }}%</p>
+          <p>This is the model's sigmoid output under the current assumed class mapping, not a calibrated probability or a measure of disease severity.</p>
+        </section>
+      {% endif %}
 
-<p>Upload a chest X-ray image to detect Pneumonia using AI</p>
+      {% if image_path or heatmap_path %}
+        <section class="images">
+          {% if image_path %}
+            <figure>
+              <h3>Uploaded X-ray</h3>
+              <img src="{{ url_for('static', filename=image_path) }}" alt="Uploaded chest X-ray">
+            </figure>
+          {% endif %}
+          {% if heatmap_path %}
+            <figure>
+              <h3>Grad-CAM visualization</h3>
+              <img src="{{ url_for('static', filename=heatmap_path) }}" alt="Grad-CAM heatmap overlay">
+            </figure>
+          {% endif %}
+        </section>
+      {% endif %}
 
-<form method="POST" enctype="multipart/form-data">
-
-<input type="file" name="file" required>
-
-<br><br>
-
-<button type="submit">Predict</button>
-
-</form>
-
-{% if prediction %}
-
-<div class="result">
-Prediction: {{ prediction }}
-</div>
-
-<div class="severity">
-Severity Score: {{ severity }} %
-</div>
-
-{% endif %}
-
-{% if image_path or heatmap_path %}
-
-<div class="images">
-
-{% if image_path %}
-
-<div>
-<h3>Uploaded X-ray</h3>
-<img src="{{ url_for('static', filename=image_path) }}">
-</div>
-{% endif %}
-
-{% if heatmap_path %}
-
-<div>
-<h3>AI Heatmap</h3>
-<img src="{{ url_for('static', filename='heatmap.jpg') }}">
-</div>
-{% endif %}
-
-</div>
-
-{% endif %}
-
-</div>
-
+      <p class="disclaimer"><strong>Educational use only:</strong> This prototype is not a medical device and must not be used to diagnose, rule out, or assess the severity of pneumonia. Predictions and heatmaps require validation by qualified clinicians.</p>
+    </section>
+  </main>
 </body>
 </html>

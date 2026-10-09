@@ -1,4 +1,7 @@
-flask
-tensorflow
-numpy
-pillow
+Flask>=3.0,<4.0
+tensorflow==2.16.2
+numpy>=1.23.5,<2.0
+keras>=3.0,<4.0
+Pillow>=10.0
+opencv-python-headless>=4.8,<4.12
+h5py>=3.9

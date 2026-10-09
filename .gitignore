@@ -1,0 +1,6 @@
+.venv/
+.venv-keras3/
+__pycache__/
+*.py[cod]
+static/uploads/*
+static/heatmaps/*

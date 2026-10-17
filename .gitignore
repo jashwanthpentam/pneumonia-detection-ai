@@ -4,3 +4,7 @@ __pycache__/
 *.py[cod]
 static/uploads/*
 static/heatmaps/*
+
+# Local Python virtual environments
+.venv-clean-test/
+
